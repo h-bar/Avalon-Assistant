@@ -139,17 +139,14 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class IdentityAssignment extends StatelessWidget {
-  Avalon game;
-  IdentityAssignment(Avalon game) {
-    this.game = game;
-  }
+  final Avalon game;
+  IdentityAssignment(this.game);
 
   void revealIdentity(BuildContext context, String player) {
     String identity = Avalon.getName(game.getIdentity(player));
 
     Map knowledge = game.getKnowledge(player);
 
-    // for Avalon.charactorInfo
     showDialog(
       context: context,
       builder: (BuildContext context) {

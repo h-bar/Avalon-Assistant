@@ -1,5 +1,3 @@
-import 'package:flutter/rendering.dart';
-
 enum Charactor { assassin, mordred, morgana, minion, oberon, percival, merlin, servant }
 
 class Avalon { 
@@ -13,6 +11,9 @@ class Avalon {
         Charactor.morgana: Charactor.minion,
         Charactor.minion: Charactor.minion,
       },
+      'task': {
+        
+      }
     },
     Charactor.mordred: {
       'name': 'Mordred',
