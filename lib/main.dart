@@ -1,7 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:flutter_tags/tag.dart';
 
 import 'avalon.dart';
 
@@ -30,7 +30,19 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Set<String> players = {};
+  List identites = [];
+  Map config = Avalon.getDefaultConfig(5);
   final _addPlayerController = TextEditingController();
+
+  bool addAPlayer(String name) {
+    bool addSuccess;
+    setState(() {
+      addSuccess = players.add(name);
+      config = Avalon.getDefaultConfig(max(players.length, 5));
+    });
+
+    return addSuccess;
+  }
 
   List<Widget> buildPlayerChips() {
     List<Widget> playerChips = <Widget>[];
@@ -40,19 +52,11 @@ class _MyHomePageState extends State<MyHomePage> {
         onDeleted: () {
           setState(() {
             players.remove(p);
+            config = Avalon.getDefaultConfig(max(players.length, 5));
           });
         })
     ));
     return playerChips;
-  }
-
-  bool addAPlayer(String name) {
-    bool addSuccess;
-    setState(() {
-      addSuccess = players.add(name);
-    });
-
-    return addSuccess;
   }
 
   Widget buildPlayerTagPanel() {
@@ -86,9 +90,27 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget buildConfigPanel() {
-    return Text('Config');
+    List<Widget> goods = [], evils = [];
+    Avalon.allGood.forEach((c) {
+      String configText = Avalon.getName(c) + ": " + config['charactors'][c].toString();
+      goods.add(Text(configText));
+    });
+    Avalon.allEvil.forEach((c) {
+      String configText = Avalon.getName(c) + ": " + config['charactors'][c].toString();
+      evils.add(Text(configText));
+    });
+    return Row(
+      children: <Widget>[
+        Column(
+          children: goods,
+        ),
+        Column(
+          children: evils,
+        )
+      ],
+    );
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,6 +123,66 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             buildPlayerTagPanel(),
             buildConfigPanel(),
+            FlatButton(
+              child: Text('Start Game'),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => IdentityAssignment(Avalon(players.toList(), config)),
+                ));
+              }
+            ), 
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class IdentityAssignment extends StatelessWidget {
+  Avalon game;
+  IdentityAssignment(Avalon game) {
+    this.game = game;
+  }
+
+  void revealIdentity(BuildContext context, String player) {
+    String identity = Avalon.getName(game.getIdentity(player));
+
+    Map knowledge = game.getKnowledge(player);
+
+    // for Avalon.charactorInfo
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(identity),
+          content: Text(knowledge.toString()),
+        );
+      },
+    );
+  }
+
+  List<Widget> buildPlayerTiles(BuildContext context) {
+    List<Widget> playerTiles = <Widget>[];
+    game.getAllPlayers().forEach((p) => playerTiles.add(
+      ActionChip(
+        label: Text(p),
+        onPressed: () => revealIdentity(context, p),
+        )
+    ));
+    return playerTiles;
+  }
+
+  @override
+  Widget build(BuildContext context ) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Identity Assignment"),
+      ),
+      body: Center(
+        child: Wrap(
+          alignment: WrapAlignment.start,
+          children: [
+            ...buildPlayerTiles(context),
           ],
         ),
       ),

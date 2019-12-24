@@ -1,3 +1,5 @@
+import 'package:flutter/rendering.dart';
+
 enum Charactor { assassin, mordred, morgana, minion, oberon, percival, merlin, servant }
 
 class Avalon { 
@@ -71,7 +73,7 @@ class Avalon {
     },
   };
 
-  static const Map config_default = {
+  static const Map configDefault = {
     '5': {
       'charactors': {
         Charactor.assassin: 1,
@@ -146,8 +148,30 @@ class Avalon {
     },
   };
 
-  static List getCharactors(int nPlayers, Map config) {
-    List identities = [];
+  static const List allCharactor = [Charactor.assassin, Charactor.mordred, Charactor.minion, Charactor.oberon, Charactor.percival, Charactor.merlin, Charactor.servant];
+  static const List allGood = [Charactor.percival, Charactor.merlin, Charactor.servant];
+  static const List allEvil = [Charactor.assassin, Charactor.mordred, Charactor.morgana, Charactor.minion, Charactor.oberon];
+
+  static Map getDefaultConfig(int nPlayers) {
+    return configDefault[nPlayers.toString()];
+  }
+
+  static String getName(Charactor c) {
+    return charactorInfo[c]['name'];
+  }
+  static String getDescroption(Charactor c) {
+    return charactorInfo[c]['description'];
+  }
+
+  List<Charactor> identites;
+  List<String> players;
+  Avalon(List<String> players, Map config) {
+    this.players = players;
+    this.identites = assignIdentities(this.players.length, config);
+  } 
+
+  List<Charactor> assignIdentities(int nPlayers, Map config) {
+    List<Charactor> identities = [];
     Charactor.values.forEach((c) {
       for (int i = 0; i < config['charactors'][c]; i++) {
         identities.add(c);
@@ -157,25 +181,48 @@ class Avalon {
     return identities;
   }
 
-  static String getName(Charactor c) {
-    return charactorInfo[c]['name'];
+  Charactor getIdentity(String player) {
+    int idx = this.players.indexOf(player);
+    return this.identites[idx];
   }
-  static String getDescroption(Charactor c) {
-    return charactorInfo[c]['description'];
+
+  List<String> getPlayer(Charactor c) {
+    List<String> players = [];
+    for (int i = 0; i < this.identites.length; i++) {
+      if (c == this.identites[i] ) {
+        players.add(this.players[i]);
+      }
+    }
+    return players;
   }
-  static Map getKnowledge(Charactor c) {
-    return charactorInfo[c]['knowledge'];
+
+  List<String> getAllPlayers() {
+    return this.players;
+  }
+
+  
+  Map getKnowledge(String player) {
+    Map knowledge = {};
+    Charactor c = getIdentity(player);
+    charactorInfo[c]['knowledge'].forEach((c, i) {
+      if (!knowledge.containsKey(getName(i))) {
+        knowledge[getName(i)] = [];
+      }
+      knowledge[getName(i)].addAll(getPlayer(c));
+    });
+
+    return knowledge;
   }
 }
 
 void main() {
-  int nPlayers = 7;
-  Map config = Avalon.config_default[nPlayers.toString()];
+  // int nPlayers = 7;
+  // Map config = Avalon.getDefaultConfig(nPlayers);
 
-  List identities = Avalon.getCharactors(nPlayers, config);
-  print(identities);
-  print(Avalon.getName(identities[3]));
-  print(Avalon.getDescroption(identities[3]));
-  print(Avalon.getKnowledge(identities[3]));
+  // List identities = Avalon.assignCharactors(nPlayers, config);
+  // print(identities);
+  // print(Avalon.getName(identities[3]));
+  // print(Avalon.getDescroption(identities[3]));
+  // print(Avalon.getKnowledge(identities[3]));
   
 }
