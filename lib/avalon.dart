@@ -74,7 +74,7 @@ class Avalon {
     },
   };
 
-  static const Map configDefault = {
+  static Map configDefault = {
     '5': {
       'charactors': {
         Charactor.assassin: 1,
@@ -85,7 +85,14 @@ class Avalon {
         Charactor.percival: 1,
         Charactor.merlin: 1,
         Charactor.servant: 1,
-      }
+      },
+      'tasks': [
+        [2 , 1],
+        [3 , 1],
+        [2 , 1],
+        [3 , 1],
+        [3 , 1],
+      ],
     },
     '6': {
       'charactors': {
@@ -97,7 +104,14 @@ class Avalon {
         Charactor.percival: 1,
         Charactor.merlin: 1,
         Charactor.servant: 2,
-      }
+      },
+      'tasks': [
+        [2 , 1],
+        [3 , 1],
+        [4 , 1],
+        [3 , 1],
+        [4 , 1],
+      ],
     },
     '7': {
       'charactors': {
@@ -109,7 +123,14 @@ class Avalon {
         Charactor.percival: 1,
         Charactor.merlin: 1,
         Charactor.servant: 2,
-      }
+      },
+      'tasks': [
+        [2 , 1],
+        [3 , 1],
+        [3 , 1],
+        [4 , 2],
+        [4 , 1],
+      ],
     },
     '8': {
       'charactors': {
@@ -121,7 +142,14 @@ class Avalon {
         Charactor.percival: 1,
         Charactor.merlin: 1,
         Charactor.servant: 3,
-      }
+      },
+      'tasks': [
+        [3 , 1],
+        [4 , 1],
+        [4 , 1],
+        [5 , 2],
+        [5 , 1],
+      ],
     },
     '9': {
       'charactors': {
@@ -133,7 +161,14 @@ class Avalon {
         Charactor.servant: 4,
         Charactor.merlin: 1,
         Charactor.percival: 1,
-      }
+      },
+      'tasks': [
+        [3 , 1],
+        [4 , 1],
+        [4 , 1],
+        [5 , 2],
+        [5 , 1],
+      ],
     },
     '10': {
       'charactors': {
@@ -145,7 +180,14 @@ class Avalon {
         Charactor.percival: 1,
         Charactor.merlin: 1,
         Charactor.servant: 4,
-      }
+      },
+      'tasks': [
+        [3 , 1],
+        [4 , 1],
+        [4 , 1],
+        [5 , 2],
+        [5 , 1],
+      ],
     },
   };
 

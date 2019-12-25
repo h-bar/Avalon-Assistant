@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'avalon.dart';
 
@@ -30,6 +29,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Set<String> players = {};
+  int nPlayers = 5;
   List identites = [];
   Map config = Avalon.getDefaultConfig(5);
   final _addPlayerController = TextEditingController();
@@ -38,66 +38,91 @@ class _MyHomePageState extends State<MyHomePage> {
     bool addSuccess;
     setState(() {
       addSuccess = players.add(name);
-      config = Avalon.getDefaultConfig(max(players.length, 5));
+      nPlayers = max(players.length, 5);
+      config = Avalon.getDefaultConfig(nPlayers);
     });
 
     return addSuccess;
   }
 
-  List<Widget> buildPlayerChips() {
+  bool addCharactor(Charactor c) {
+    int nCharactors = 0;
+    config['charactors'].forEach((c, n) => nCharactors += n);
+    if (nCharactors >= nPlayers) {
+      return false;
+    }
+
+    setState(() {
+       config['charactors'][c] ++;
+    });
+    return true;
+  }
+
+  bool removeCharactor(Charactor c) {
+    if (config['charactors'][c] <= 0) {
+      return false;
+    }
+
+    setState(() {
+       config['charactors'][c] --;
+    });
+    return true;
+  }
+
+
+  Widget buildPlayerChips() {
     List<Widget> playerChips = <Widget>[];
     players.forEach((p) => playerChips.add(
-      InputChip(
+       InputChip(
         label: Text(p),
         onDeleted: () {
           setState(() {
             players.remove(p);
-            config = Avalon.getDefaultConfig(max(players.length, 5));
+            nPlayers = max(players.length, 5);
+            config = Avalon.getDefaultConfig(nPlayers);
           });
         })
     ));
-    return playerChips;
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.start,
+      children: playerChips
+    );
   }
 
-  Widget buildPlayerTagPanel() {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
-      child: Wrap(
-        alignment: WrapAlignment.start,
-        children: [
-          ...buildPlayerChips(),
-          Container(
-            width: 100,
-            child: TextField(
-              controller: _addPlayerController,
-              decoration: InputDecoration(
-                labelText: 'Add a Player',
-              ),
-              onSubmitted: (t) {
-                if (players.length >= 10) {
-                  print("Maxium 10 players are allowed for this game");
-                } else if (!addAPlayer(t)){
-                  print("Please use different name for each player");
-                } 
-                _addPlayerController.clear();
+  Widget buildConfigItem(Charactor c) {
+    String configText = Avalon.getName(c) + ": " + config['charactors'][c].toString();
+    Text charactor = Text(Avalon.getName(c));
+    Text number = Text(config['charactors'][c].toString());
 
-              }
-            ),
-          ),
-        ],
-      ),
-    );
+    return Row(
+      children: [
+        IconButton(
+          icon: Icon(Icons.remove_circle), 
+          onPressed: () {
+            setState(() {
+              removeCharactor(c);
+            });
+          },
+        ),
+        Text(configText),
+        IconButton(
+          icon: Icon(Icons.add_circle),
+          onPressed: () {
+            setState(() {
+              addCharactor(c);
+            });
+          },
+        ),
+      ]);
   }
 
   Widget buildConfigPanel() {
     List<Widget> goods = [], evils = [];
     Avalon.allGood.forEach((c) {
-      String configText = Avalon.getName(c) + ": " + config['charactors'][c].toString();
-      goods.add(Text(configText));
+      goods.add(buildConfigItem(c));
     });
     Avalon.allEvil.forEach((c) {
-      String configText = Avalon.getName(c) + ": " + config['charactors'][c].toString();
-      evils.add(Text(configText));
+      evils.add(buildConfigItem(c));
     });
     return Row(
       children: <Widget>[
@@ -111,29 +136,49 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
  
+  Widget addPlayerBtn() {
+    return TextField(
+        controller: _addPlayerController,
+        decoration: InputDecoration(
+          labelText: 'Add a Player',
+        ),
+        onSubmitted: (t) {
+          if (players.length >= 10) {
+            print("Maxium 10 players are allowed for this game");
+          } else if (!addAPlayer(t)){
+            print("Please use different name for each player");
+          } 
+          _addPlayerController.clear();
+        }
+    );
+  }
+
+  Widget startGameBtn() {
+    return FlatButton(
+      child: Text('Start Game'),
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => IdentityAssignment(Avalon(players.toList(), config)),
+        ));
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
+      body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            buildPlayerTagPanel(),
+            buildPlayerChips(),
+            addPlayerBtn(),
             buildConfigPanel(),
-            FlatButton(
-              child: Text('Start Game'),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => IdentityAssignment(Avalon(players.toList(), config)),
-                ));
-              }
-            ), 
+            startGameBtn(),
           ],
         ),
-      ),
     );
   }
 }
