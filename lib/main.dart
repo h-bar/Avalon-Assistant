@@ -214,6 +214,18 @@ class IdentityAssignment extends StatelessWidget {
     return playerTiles;
   }
 
+  Widget taskBtn(BuildContext context) {
+    return FlatButton(
+      child: Text('Vote for tasks'),
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => TaskPage(),
+        ));
+      }
+    );
+  }
+
+
   @override
   Widget build(BuildContext context ) {
     return Scaffold(
@@ -225,10 +237,105 @@ class IdentityAssignment extends StatelessWidget {
           alignment: WrapAlignment.start,
           children: [
             ...buildPlayerTiles(context),
+            taskBtn(context),
           ],
         ),
       ),
     );
   }
 }
+
+
  
+class TaskPage extends StatefulWidget {
+  TaskPage({Key key}) : super(key: key);
+
+  @override
+  _TaskPageState createState() => _TaskPageState();
+}
+
+class _TaskPageState extends State<TaskPage> {
+  int nVotes = 0;
+  int _nApproves = 0;
+  int _nRejects = 0;
+  int nApproves = 0;
+  int nRejects = 0;
+
+  Widget buildVoteOptoins() {
+    return Row(
+      children: <Widget>[
+        IconButton(
+          icon: Icon(Icons.done),
+          onPressed: () {
+            _nApproves++;
+            setState(() {
+              nVotes++;
+            });
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () {
+            _nRejects++;
+            setState(() {
+              nVotes++;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget buildResults() {
+    return Row(
+      children: <Widget>[
+        Text("Votes: " + nVotes.toString()),
+        Text("Approved: " + nApproves.toString()),
+        Text("Rejected: " + nRejects.toString()),
+      ],
+    );
+  }
+
+  Widget buildActions() {
+    return Row(
+      children: <Widget>[
+        FlatButton(
+          child: Text("Show results"),
+          onPressed: () {
+            setState(() {
+              nApproves = _nApproves;
+              nRejects = _nRejects;
+            });
+          },
+       ),
+       FlatButton(
+          child: Text("Clear votes"),
+          onPressed: () {
+            setState(() {
+              nVotes = 0;
+              _nApproves = 0;
+              _nRejects = 0;
+              nApproves = 0;
+              nRejects = 0;
+            });
+          },
+       )
+    ],);
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Complete Task"),
+      ),
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            buildVoteOptoins(),
+            buildResults(),
+            buildActions(),
+          ],
+        ),
+    );
+  }
+}
