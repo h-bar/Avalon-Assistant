@@ -28,13 +28,13 @@ class AddPlayer extends StatefulWidget {
 }
 
 class _AddPlayerState extends State<AddPlayer> {
-  Set<String> players = {};
+  Set<String> players = {"A", "B", "C", "D", "E"};
   int nPlayers = 5;
   List identites = [];
   Map config = Avalon.getDefaultConfig(5);
   final _addPlayerController = TextEditingController();
 
-  bool addAPlayer(String name) {
+  bool addPlayer(String name) {
     bool addSuccess;
     setState(() {
       addSuccess = players.add(name);
@@ -43,6 +43,13 @@ class _AddPlayerState extends State<AddPlayer> {
     });
 
     return addSuccess;
+  }
+  void removePlayer(String name) {
+    setState(() {
+      players.remove(name);
+      nPlayers = max(players.length, 5);
+      config = Avalon.getDefaultConfig(nPlayers);
+    });
   }
 
   bool addCharactor(Charactor c) {
@@ -57,7 +64,6 @@ class _AddPlayerState extends State<AddPlayer> {
     });
     return true;
   }
-
   bool removeCharactor(Charactor c) {
     if (config['charactors'][c] <= 0) {
       return false;
@@ -69,27 +75,43 @@ class _AddPlayerState extends State<AddPlayer> {
     return true;
   }
 
-
-  Widget buildPlayerChips() {
-    List<Widget> playerChips = <Widget>[];
-    players.forEach((p) => playerChips.add(
-       InputChip(
-        label: Text(p),
-        onDeleted: () {
-          setState(() {
-            players.remove(p);
-            nPlayers = max(players.length, 5);
-            config = Avalon.getDefaultConfig(nPlayers);
-          });
-        })
-    ));
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.start,
-      children: playerChips
+  Widget playerPanel() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          "Players", 
+          style: Theme.of(context)
+                  .textTheme
+                  .headline,
+        ),
+        Wrap(
+          spacing: 8,
+          children: players.map((String p) => 
+            InputChip(
+              label: Text(p),
+              // avatar: CircleAvatar(child: Text(p.substring(0, 1)),),
+              onDeleted: () => removePlayer(p),
+            )
+          ).toList()
+        ),
+        TextField(
+            controller: _addPlayerController,
+            decoration: InputDecoration.collapsed(hintText: "Add a Player"),
+            onSubmitted: (t) {
+              if (players.length >= 10) {
+                print("Maxium 10 players are allowed for this game");
+              } else if (!addPlayer(t)){
+                print("Please use different name for each player");
+              } 
+              _addPlayerController.clear();
+            }
+          ),
+      ],
     );
   }
 
-  Widget buildConfigItem(Charactor c) {
+  Widget charactorItem(Charactor c) {
     String configText = Avalon.getName(c) + ": " + config['charactors'][c].toString();
     Text charactor = Text(Avalon.getName(c));
     Text number = Text(config['charactors'][c].toString());
@@ -116,40 +138,31 @@ class _AddPlayerState extends State<AddPlayer> {
       ]);
   }
 
-  Widget buildConfigPanel() {
-    List<Widget> goods = [], evils = [];
-    Avalon.allGood.forEach((c) {
-      goods.add(buildConfigItem(c));
-    });
-    Avalon.allEvil.forEach((c) {
-      evils.add(buildConfigItem(c));
-    });
-    return Row(
+  Widget charactorPanel() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Column(
-          children: goods,
+        Text(
+          "Charactors", 
+          style: Theme.of(context)
+                  .textTheme
+                  .headline,
         ),
-        Column(
-          children: evils,
-        )
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: Avalon.allGood.map((c) => charactorItem(c)).toList(),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: Avalon.allEvil.map((c) => charactorItem(c)).toList(),
+            )
+          ]
+        ),
+
       ],
-    );
-  }
- 
-  Widget addPlayerBtn() {
-    return TextField(
-        controller: _addPlayerController,
-        decoration: InputDecoration(
-          labelText: 'Add a Player',
-        ),
-        onSubmitted: (t) {
-          if (players.length >= 10) {
-            print("Maxium 10 players are allowed for this game");
-          } else if (!addAPlayer(t)){
-            print("Please use different name for each player");
-          } 
-          _addPlayerController.clear();
-        }
     );
   }
 
@@ -170,15 +183,17 @@ class _AddPlayerState extends State<AddPlayer> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Column(
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            buildPlayerChips(),
-            addPlayerBtn(),
-            buildConfigPanel(),
+            playerPanel(),
+            charactorPanel(),
             startGameBtn(),
           ],
         ),
+      ),
     );
   }
 }
