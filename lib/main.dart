@@ -87,7 +87,13 @@ class _AddPlayerState extends State<AddPlayer> {
     );
   }
 
-  void replaceCard(Charactor c) {
+  void replaceCard(Charactor newC, Charactor oldC) {
+    removeCharactor(oldC);
+    addCharactor(newC);
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+
+  void replaceCardDialog(Charactor c) {
     showDialog(
       context: context,
       builder: (_) => Center( 
@@ -97,7 +103,7 @@ class _AddPlayerState extends State<AddPlayer> {
           width: 300,
           child: Card(
             color: Colors.white,
-            margin: EdgeInsets.symmetric(vertical: 80),
+            // margin: EdgeInsets.symmetric(vertical: 80),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
             ),
@@ -114,11 +120,31 @@ class _AddPlayerState extends State<AddPlayer> {
                     ),
                   ]
                 ),
+                SizedBox.fromSize(size: Size(0, 10),),
                 Text(
                   Avalon.getName(c),
                   style: Theme.of(context).textTheme.headline,
                 ),
-                Text(Avalon.getDescroption(c)),
+                Text(
+                  Avalon.getDescroption(c),
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+                SizedBox.fromSize(size: Size(0, 10),),
+                Text(
+                  "Replace it with",
+                  style: Theme.of(context).textTheme.title,
+                ),
+                Flexible(
+                  child: GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 3,
+                    childAspectRatio: 0.71,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: (Avalon.allGood.contains(c) ? Avalon.allGood : Avalon.allEvil).where((newC) => config['charactors'][newC] == 0 || newC == Charactor.minion || newC == Charactor.servant).map(
+                      (Charactor newC) => makeCard2(newC, c, replaceCard)
+                    ).toList(),
+                  ),
+                ),
               ],
             )
           )      
@@ -127,12 +153,47 @@ class _AddPlayerState extends State<AddPlayer> {
     );
   }
 
-  Card makeCard(Charactor c) {
-    return Card(
-      shape: RoundedRectangleBorder(
+  Widget makeCard2(Charactor c, Charactor oldC, Function onTap) {
+    return Container(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      // color: Colors.black45,
+      margin: new EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
+      child: InkResponse(
+        onTap: () => onTap(c, oldC),
+        child: Stack(
+          alignment: AlignmentDirectional.bottomCenter,
+          children: <Widget>[
+            Image(
+              image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: Opacity(
+                opacity: 0.75,
+                child: Container(
+                  // alignment: Alignment.bottomCenter,
+                  color: Colors.grey[200],
+                  child: Text(
+                    Avalon.getName(c),
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ), 
+      ),
+    );
+  }
+
+  Widget makeCard(Charactor c, Function onTap) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
       margin: new EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
       child: Badge(
         badgeContent: Text(Avalon.getDefaultConfig(nPlayers)['charactors'][c].toString()),
@@ -142,7 +203,7 @@ class _AddPlayerState extends State<AddPlayer> {
           right: 4,
         ),
         child: InkResponse(
-          onTap: () => replaceCard(c),
+          onTap: () => onTap(c),
           child: Stack(
             alignment: AlignmentDirectional.bottomCenter,
             children: <Widget>[
@@ -201,7 +262,7 @@ class _AddPlayerState extends State<AddPlayer> {
                     childAspectRatio: 0.71,
                     physics: NeverScrollableScrollPhysics(),
                     children: Avalon.allGood.where((c) => config['charactors'][c] != 0).map(
-                                (Charactor c) => makeCard(c)
+                                (Charactor c) => makeCard(c, replaceCardDialog)
                               ).toList(),
                   ),
                 ),
@@ -212,7 +273,7 @@ class _AddPlayerState extends State<AddPlayer> {
                     childAspectRatio: 0.71,
                     physics: NeverScrollableScrollPhysics(),
                     children: Avalon.allEvil.where((c) => config['charactors'][c] != 0).map(
-                                (Charactor c) => makeCard(c)
+                                (Charactor c) => makeCard(c, replaceCardDialog)
                               ).toList(),
                   ),
                 ),
