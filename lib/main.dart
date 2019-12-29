@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart';
 
 import 'avalon.dart';
 
@@ -177,23 +178,67 @@ class _AddPlayerState extends State<AddPlayer> {
     );
   }
 
+  Card makeCard(String assetPath, int nCards) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      // color: Colors.black45,
+      margin: new EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
+      child: Badge(
+        badgeContent: Text(nCards.toString()),
+        position: BadgePosition(
+          top: 0,
+          right: 4,
+        ),
+        child: Image(
+          image: AssetImage(assetPath),
+          ),
+      ) 
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    Map config = Avalon.getDefaultConfig(10);
     return Scaffold(
       appBar: AppBar(
+        elevation: 0.1,
+        backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
         title: Text(widget.title),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.info),
+            onPressed: () {},
+          )
+        ],
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            playerPanel(),
-            charactorPanel(),
-            startGameBtn(),
-          ],
-        ),
-      ),
+      body: Column (
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Flexible(
+            child: GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 4,
+              childAspectRatio: 0.71,
+              physics: NeverScrollableScrollPhysics(),
+              children: Avalon.allGood.where((c) => config['charactors'][c] != 0).map(
+                          (Charactor c) => makeCard("assets/Assassin.png", config['charactors'][c])
+                        ).toList(),
+            ),
+          ),
+          Flexible(
+            child: GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 4,
+              childAspectRatio: 0.71,
+              physics: NeverScrollableScrollPhysics(),
+              children: Avalon.allEvil.where((c) => config['charactors'][c] != 0).map(
+                          (Charactor c) => makeCard("assets/Assassin.png", config['charactors'][c])
+                        ).toList(),
+            ),
+          ),
+      ])
     );
   }
 }

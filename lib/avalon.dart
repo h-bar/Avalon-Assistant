@@ -191,9 +191,9 @@ class Avalon {
     },
   };
 
-  static const List allCharactor = [Charactor.assassin, Charactor.mordred, Charactor.minion, Charactor.oberon, Charactor.percival, Charactor.merlin, Charactor.servant];
-  static const List allGood = [Charactor.percival, Charactor.merlin, Charactor.servant];
-  static const List allEvil = [Charactor.assassin, Charactor.mordred, Charactor.morgana, Charactor.minion, Charactor.oberon];
+  static const List<Charactor> allCharactor = [Charactor.assassin, Charactor.mordred, Charactor.minion, Charactor.oberon, Charactor.percival, Charactor.merlin, Charactor.servant];
+  static const List<Charactor> allGood = [Charactor.percival, Charactor.merlin, Charactor.servant];
+  static const List<Charactor> allEvil = [Charactor.assassin, Charactor.mordred, Charactor.morgana, Charactor.minion, Charactor.oberon];
 
   static Map getDefaultConfig(int nPlayers) {
     return configDefault[nPlayers.toString()];
