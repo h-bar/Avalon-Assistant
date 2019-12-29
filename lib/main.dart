@@ -87,7 +87,7 @@ class _AddPlayerState extends State<AddPlayer> {
     );
   }
 
-  Card makeCard(String assetPath, int nCards) {
+  Card makeCard(String assetPath, String text, int nCards) {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -100,9 +100,25 @@ class _AddPlayerState extends State<AddPlayer> {
           top: 0,
           right: 4,
         ),
-        child: Image(
-          image: AssetImage(assetPath),
-          ),
+        child: Stack(
+          alignment: AlignmentDirectional.bottomCenter,
+          children: <Widget>[
+            Image(
+              image: AssetImage(assetPath),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: Container(
+                color: Colors.grey[200],
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+              )
+            )
+          ],) 
       ) 
     );
   }
@@ -136,7 +152,7 @@ class _AddPlayerState extends State<AddPlayer> {
                     childAspectRatio: 0.71,
                     physics: NeverScrollableScrollPhysics(),
                     children: Avalon.allGood.where((c) => config['charactors'][c] != 0).map(
-                                (Charactor c) => makeCard("assets/Assassin.png", config['charactors'][c])
+                                (Charactor c) => makeCard("assets/Assassin.png", Avalon.getName(c), Avalon.getDefaultConfig(nPlayers)['charactors'][c])
                               ).toList(),
                   ),
                 ),
@@ -147,7 +163,7 @@ class _AddPlayerState extends State<AddPlayer> {
                     childAspectRatio: 0.71,
                     physics: NeverScrollableScrollPhysics(),
                     children: Avalon.allEvil.where((c) => config['charactors'][c] != 0).map(
-                                (Charactor c) => makeCard("assets/Assassin.png", config['charactors'][c])
+                                (Charactor c) => makeCard("assets/Assassin.png", Avalon.getName(c), Avalon.getDefaultConfig(nPlayers)['charactors'][c])
                               ).toList(),
                   ),
                 ),
