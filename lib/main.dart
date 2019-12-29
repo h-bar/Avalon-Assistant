@@ -87,7 +87,26 @@ class _AddPlayerState extends State<AddPlayer> {
     );
   }
 
-  Card makeCard(String assetPath, String text, int nCards) {
+  void replaceCard(Charactor c) {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: FittedBox(
+          child: Column(
+            children: [
+              Image(
+                image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
+              ),
+            ]
+          )
+        )
+      )
+    );
+  }
+
+  Card makeCard(Charactor c) {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -95,36 +114,39 @@ class _AddPlayerState extends State<AddPlayer> {
       // color: Colors.black45,
       margin: new EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
       child: Badge(
-        badgeContent: Text(nCards.toString()),
+        badgeContent: Text(Avalon.getDefaultConfig(nPlayers)['charactors'][c].toString()),
         position: BadgePosition(
           top: 0,
           right: 4,
         ),
-        child: Stack(
-          alignment: AlignmentDirectional.bottomCenter,
-          children: <Widget>[
-            Image(
-              image: AssetImage(assetPath),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: Opacity(
-                 opacity: 0.75,
-                child: Container(
-                  // alignment: Alignment.bottomCenter,
-                  color: Colors.grey[200],
-                  child: Text(
-                    text,
-                    style: TextStyle(
-                      fontSize: 18,
+        child: InkResponse(
+          onTap: () => replaceCard(c),
+          child: Stack(
+            alignment: AlignmentDirectional.bottomCenter,
+            children: <Widget>[
+              Image(
+                image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: Opacity(
+                  opacity: 0.75,
+                  child: Container(
+                    // alignment: Alignment.bottomCenter,
+                    color: Colors.grey[200],
+                    child: Text(
+                      Avalon.getName(c),
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
                   ),
-                )
-              )
-            )
-          ],
-        ) 
-      ) 
+                ),
+              ),
+            ],
+          ), 
+        ),
+      ), 
     );
   }
 
@@ -157,7 +179,7 @@ class _AddPlayerState extends State<AddPlayer> {
                     childAspectRatio: 0.71,
                     physics: NeverScrollableScrollPhysics(),
                     children: Avalon.allGood.where((c) => config['charactors'][c] != 0).map(
-                                (Charactor c) => makeCard("assets/Assassin.png", Avalon.getName(c), Avalon.getDefaultConfig(nPlayers)['charactors'][c])
+                                (Charactor c) => makeCard(c)
                               ).toList(),
                   ),
                 ),
@@ -168,7 +190,7 @@ class _AddPlayerState extends State<AddPlayer> {
                     childAspectRatio: 0.71,
                     physics: NeverScrollableScrollPhysics(),
                     children: Avalon.allEvil.where((c) => config['charactors'][c] != 0).map(
-                                (Charactor c) => makeCard("assets/Assassin.png", Avalon.getName(c), Avalon.getDefaultConfig(nPlayers)['charactors'][c])
+                                (Charactor c) => makeCard(c)
                               ).toList(),
                   ),
                 ),
