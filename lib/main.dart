@@ -108,17 +108,22 @@ class _AddPlayerState extends State<AddPlayer> {
             ),
             SizedBox(
               width: double.infinity,
-              child: Container(
-                color: Colors.grey[200],
-                child: Text(
-                  text,
-                  style: TextStyle(
-                    fontSize: 18,
+              child: Opacity(
+                 opacity: 0.75,
+                child: Container(
+                  // alignment: Alignment.bottomCenter,
+                  color: Colors.grey[200],
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
                   ),
-                ),
+                )
               )
             )
-          ],) 
+          ],
+        ) 
       ) 
     );
   }
