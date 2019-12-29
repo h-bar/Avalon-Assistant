@@ -4,7 +4,7 @@ class Avalon {
   static const Map charactorInfo = {
     Charactor.assassin: {
       'name': 'Assassin',
-      'description': '',
+      'description': 'Assassinate Merlin',
       'knowledge': {
         Charactor.assassin: Charactor.minion,
         Charactor.mordred: Charactor.minion,
@@ -17,7 +17,7 @@ class Avalon {
     },
     Charactor.mordred: {
       'name': 'Mordred',
-      'description': '',
+      'description': 'Unkown to Merlin',
       'knowledge': {
         Charactor.assassin: Charactor.minion,
         Charactor.mordred: Charactor.minion,
@@ -27,7 +27,7 @@ class Avalon {
     },
     Charactor.morgana: {
       'name': 'Morgana',
-      'description': '',
+      'description': 'Appear as Merlin',
       'knowledge': {
         Charactor.assassin: Charactor.minion,
         Charactor.mordred: Charactor.minion,
@@ -37,7 +37,7 @@ class Avalon {
     },
     Charactor.minion: {
       'name': 'Minion',
-      'description': '',
+      'description': 'Minion of Mordred',
       'knowledge': {
         Charactor.assassin: Charactor.minion,
         Charactor.mordred: Charactor.minion,
@@ -47,12 +47,12 @@ class Avalon {
     },
     Charactor.oberon: {
       'name': 'Oberon',
-      'description': '',
+      'description': 'Unknown to Evil',
       'knowledge': {},
     },
     Charactor.percival: {
       'name': 'Percival',
-      'description': '',
+      'description': 'Knows Merlin',
       'knowledge': {
         Charactor.merlin: Charactor.merlin,
         Charactor.morgana: Charactor.merlin,
@@ -60,7 +60,7 @@ class Avalon {
     },
     Charactor.merlin: {
       'name': 'Merlin',
-      'description': '',
+      'description': 'Knows evil, must remain hidden',
       'knowledge': {
         Charactor.assassin: Charactor.minion,
         Charactor.morgana: Charactor.minion,
@@ -69,7 +69,7 @@ class Avalon {
     },
     Charactor.servant: {
       'name': 'Servant',
-      'description': '',
+      'description': 'Loyal Servant of Arthur',
       'knowledge': {},
     },
   };

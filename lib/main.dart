@@ -90,17 +90,38 @@ class _AddPlayerState extends State<AddPlayer> {
   void replaceCard(Charactor c) {
     showDialog(
       context: context,
-      builder: (_) => Dialog(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        child: FittedBox(
-          child: Column(
-            children: [
-              Image(
-                image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
-              ),
-            ]
-          )
+      builder: (_) => Center( 
+        child: Container(
+          margin: EdgeInsets.all(0),
+          padding: EdgeInsets.all(0),
+          width: 300,
+          child: Card(
+            color: Colors.white,
+            margin: EdgeInsets.symmetric(vertical: 80),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row( 
+                  children: [
+                    Expanded( 
+                      child: Image(
+                        fit: BoxFit.fitWidth,
+                        image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
+                      )
+                    ),
+                  ]
+                ),
+                Text(
+                  Avalon.getName(c),
+                  style: Theme.of(context).textTheme.headline,
+                ),
+                Text(Avalon.getDescroption(c)),
+              ],
+            )
+          )      
         )
       )
     );
@@ -115,6 +136,7 @@ class _AddPlayerState extends State<AddPlayer> {
       margin: new EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
       child: Badge(
         badgeContent: Text(Avalon.getDefaultConfig(nPlayers)['charactors'][c].toString()),
+        animationType: null,
         position: BadgePosition(
           top: 0,
           right: 4,
