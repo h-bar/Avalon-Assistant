@@ -102,7 +102,8 @@ class _AddPlayerState extends State<AddPlayer> {
           padding: EdgeInsets.all(0),
           width: 300,
           child: Card(
-            color: Colors.white,
+            color: Colors.transparent,
+            elevation: 0,
             // margin: EdgeInsets.symmetric(vertical: 80),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
@@ -172,8 +173,10 @@ class _AddPlayerState extends State<AddPlayer> {
               child: Opacity(
                 opacity: 0.75,
                 child: Container(
-                  // alignment: Alignment.bottomCenter,
-                  color: Colors.grey[200],
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
+                    color: Colors.grey[200],
+                  ),
                   child: Text(
                     Avalon.getName(c),
                     style: TextStyle(
@@ -215,8 +218,10 @@ class _AddPlayerState extends State<AddPlayer> {
                 child: Opacity(
                   opacity: 0.75,
                   child: Container(
-                    // alignment: Alignment.bottomCenter,
-                    color: Colors.grey[200],
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
+                      color: Colors.grey[200],
+                    ),
                     child: Text(
                       Avalon.getName(c),
                       style: TextStyle(
