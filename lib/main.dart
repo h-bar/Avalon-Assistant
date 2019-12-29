@@ -76,97 +76,6 @@ class _AddPlayerState extends State<AddPlayer> {
     return true;
   }
 
-  Widget playerPanel() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          "Players", 
-          style: Theme.of(context)
-                  .textTheme
-                  .headline,
-        ),
-        Wrap(
-          spacing: 8,
-          children: players.map((String p) => 
-            InputChip(
-              label: Text(p),
-              // avatar: CircleAvatar(child: Text(p.substring(0, 1)),),
-              onDeleted: () => removePlayer(p),
-            )
-          ).toList()
-        ),
-        TextField(
-            controller: _addPlayerController,
-            decoration: InputDecoration.collapsed(hintText: "Add a Player"),
-            onSubmitted: (t) {
-              if (players.length >= 10) {
-                print("Maxium 10 players are allowed for this game");
-              } else if (!addPlayer(t)){
-                print("Please use different name for each player");
-              } 
-              _addPlayerController.clear();
-            }
-          ),
-      ],
-    );
-  }
-
-  Widget charactorItem(Charactor c) {
-    String configText = Avalon.getName(c) + ": " + config['charactors'][c].toString();
-    Text charactor = Text(Avalon.getName(c));
-    Text number = Text(config['charactors'][c].toString());
-
-    return Row(
-      children: [
-        IconButton(
-          icon: Icon(Icons.remove_circle), 
-          onPressed: () {
-            setState(() {
-              removeCharactor(c);
-            });
-          },
-        ),
-        Text(configText),
-        IconButton(
-          icon: Icon(Icons.add_circle),
-          onPressed: () {
-            setState(() {
-              addCharactor(c);
-            });
-          },
-        ),
-      ]);
-  }
-
-  Widget charactorPanel() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          "Charactors", 
-          style: Theme.of(context)
-                  .textTheme
-                  .headline,
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: Avalon.allGood.map((c) => charactorItem(c)).toList(),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: Avalon.allEvil.map((c) => charactorItem(c)).toList(),
-            )
-          ]
-        ),
-
-      ],
-    );
-  }
-
   Widget startGameBtn() {
     return FlatButton(
       child: Text('Start Game'),
@@ -200,7 +109,7 @@ class _AddPlayerState extends State<AddPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    Map config = Avalon.getDefaultConfig(10);
+    Map config = Avalon.getDefaultConfig(nPlayers);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -214,30 +123,71 @@ class _AddPlayerState extends State<AddPlayer> {
         ],
       ),
       body: Column (
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
-            child: GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 4,
-              childAspectRatio: 0.71,
-              physics: NeverScrollableScrollPhysics(),
-              children: Avalon.allGood.where((c) => config['charactors'][c] != 0).map(
-                          (Charactor c) => makeCard("assets/Assassin.png", config['charactors'][c])
-                        ).toList(),
+            child: Column(
+              children: <Widget>[
+                Flexible(
+                  child: GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 4,
+                    childAspectRatio: 0.71,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: Avalon.allGood.where((c) => config['charactors'][c] != 0).map(
+                                (Charactor c) => makeCard("assets/Assassin.png", config['charactors'][c])
+                              ).toList(),
+                  ),
+                ),
+                Flexible(
+                  child: GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 4,
+                    childAspectRatio: 0.71,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: Avalon.allEvil.where((c) => config['charactors'][c] != 0).map(
+                                (Charactor c) => makeCard("assets/Assassin.png", config['charactors'][c])
+                              ).toList(),
+                  ),
+                ),
+              ],
             ),
           ),
-          Flexible(
-            child: GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 4,
-              childAspectRatio: 0.71,
-              physics: NeverScrollableScrollPhysics(),
-              children: Avalon.allEvil.where((c) => config['charactors'][c] != 0).map(
-                          (Charactor c) => makeCard("assets/Assassin.png", config['charactors'][c])
-                        ).toList(),
+          
+          
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Wrap(
+                  spacing: 4,
+                  children: players.map((String p) => 
+                    InputChip(
+                      label: Text(p),
+                      // avatar: CircleAvatar(child: Text(p.substring(0, 1)),),
+                      onDeleted: () => removePlayer(p),
+                    )
+                  ).toList()
+                ),
+                TextField(
+                  controller: _addPlayerController,
+                  decoration: InputDecoration.collapsed(hintText: "Add a Player"),
+                  onSubmitted: (t) {
+                    if (players.length >= 10) {
+                      print("Maxium 10 players are allowed for this game");
+                    } else if (!addPlayer(t)){
+                      print("Please use different name for each player");
+                    } 
+                    _addPlayerController.clear();
+                  }
+                ),
+              ],
             ),
-          ),
+          )
+
       ])
     );
   }
