@@ -39,15 +39,16 @@ Widget makeACard(String imgPath, String caption, {int count = 1, bool showOneCou
   );
 }
 Widget makeGrids({List<Widget> children, int count = 4}) {
+  int nItems = children != null ? children.length : 0;
   return Column(
     mainAxisSize: MainAxisSize.min,
-    children: List<int>.generate((children.length ~/ count) + 1, (i) => i).map(
+    children: List<int>.generate((nItems ~/ count) + 1, (i) => i).map(
       (i) => Row(
         children: List<int>.generate(count, (j) => j).map(
           (j) => Flexible(
             child: Padding(
               padding: EdgeInsets.all(3),
-              child: children.length > i * count + j ? children[i * count + j] : SizedBox(),
+              child: nItems > i * count + j ? children[i * count + j] : SizedBox(),
             )
           )
         ).toList()
@@ -302,7 +303,7 @@ class RevealPage extends StatelessWidget {
       child: Text('Start Quests'),
       onPressed: () {
         Navigator.push(context, MaterialPageRoute(
-          builder: (context) => TaskPage(),
+          builder: (context) => QuestPage(),
         ));
       }
     );
@@ -336,83 +337,98 @@ class RevealPage extends StatelessWidget {
   }
 }
 
-
- 
-class TaskPage extends StatefulWidget {
-  TaskPage({Key key}) : super(key: key);
+class QuestPage extends StatefulWidget {
+  QuestPage({Key key}) : super(key: key);
 
   @override
-  _TaskPageState createState() => _TaskPageState();
+  _QuestPageState createState() => _QuestPageState();
 }
 
-class _TaskPageState extends State<TaskPage> {
+class _QuestPageState extends State<QuestPage> {
+  Widget finishedQuests;
   int nVotes = 0;
-  int _nApproves = 0;
-  int _nRejects = 0;
-  int nApproves = 0;
-  int nRejects = 0;
+  int nSuccesses = 0;
+  int nFails = 0;
 
-  Widget buildVoteOptoins() {
-    return Row(
-      children: <Widget>[
-        IconButton(
-          icon: Icon(Icons.done),
-          onPressed: () {
-            _nApproves++;
-            setState(() {
-              nVotes++;
-            });
-          },
-        ),
-        IconButton(
-          icon: Icon(Icons.clear),
-          onPressed: () {
-            _nRejects++;
-            setState(() {
-              nVotes++;
-            });
-          },
-        ),
-      ],
+  bool success() {
+    if (nVotes >= 5) {
+      return false;
+    }
+    setState(() {
+      nVotes++;
+      nSuccesses++;
+      vote();
+    });
+
+    return true;
+  }
+
+  bool fail() {
+    if (nVotes >= 5) {
+      return false;
+    }
+    setState(() {
+      nVotes++;
+      nFails++;
+      vote();
+    });
+    return true;
+  }
+
+  void vote() {
+    finishedQuests = makeGrids(
+        count: 3,
+        children: List<int>.generate(nVotes, (i) => i).map((_) =>
+          makeACard("assets/QuestBack.png", "Vote")
+      ).toList());
+  }
+
+  Widget revealQuestBtn() {
+    return FlatButton(
+      child: Text('Reveal Quest Results'),
+      color: Theme.of(context).accentColor,
+      onPressed: () {
+        setState(() {
+          finishedQuests = makeGrids(
+            count: 3,
+            children: List<int>.generate(nSuccesses, (i) => i).map((_) =>
+              makeACard("assets/Success.png", "Success")
+          ).toList()
+          ..addAll(
+            List<int>.generate(nFails, (i) => i).map((_) =>
+              makeACard("assets/Fail.png", "Fail")
+            ).toList()
+          ));
+        });
+      }
     );
   }
 
-  Widget buildResults() {
-    return Row(
-      children: <Widget>[
-        Text("Votes: " + nVotes.toString()),
-        Text("Approved: " + nApproves.toString()),
-        Text("Rejected: " + nRejects.toString()),
-      ],
+  Widget resetBtn() {
+    return FlatButton(
+      child: Text("Reset Quests"),
+      color: Theme.of(context).accentColor,
+      onPressed: () {
+        setState(() {
+          nVotes = 0;
+          nSuccesses = 0;
+          nFails = 0;
+          vote();
+        });
+      },
     );
   }
 
-  Widget buildActions() {
-    return Row(
-      children: <Widget>[
-        FlatButton(
-          child: Text("Show results"),
-          onPressed: () {
-            setState(() {
-              nApproves = _nApproves;
-              nRejects = _nRejects;
-            });
-          },
-       ),
-       FlatButton(
-          child: Text("Clear votes"),
-          onPressed: () {
-            setState(() {
-              nVotes = 0;
-              _nApproves = 0;
-              _nRejects = 0;
-              nApproves = 0;
-              nRejects = 0;
-            });
-          },
-       )
-    ],);
+  @override
+  void initState() {
+    super.initState();
+    finishedQuests = makeGrids(
+      count: 5,
+      children: List<int>.generate(nVotes, (i) => i).map((_) =>
+        makeACard("assets/QuestBack.png", "Vote")
+    ).toList());
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -421,8 +437,30 @@ class _TaskPageState extends State<TaskPage> {
       ),
       body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            
+            finishedQuests,
+            Expanded(child: SizedBox(),),
+            makeGrids(
+              count: 2,
+              children: [
+                InkResponse(
+                  onTap: success,
+                  child: makeACard("assets/Success.png", "Success"),
+                ),
+                InkResponse(
+                  onTap: fail,
+                  child: makeACard("assets/Fail.png", "Fail"),
+                )
+              ]
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                revealQuestBtn(),
+                resetBtn()
+              ],
+            )
           ],
         ),
     );
