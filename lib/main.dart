@@ -7,46 +7,33 @@ import 'avalon.dart';
 
 void main() => runApp(AvalonAssistant());
 
-Widget makeACard(String imgPath, String caption, int count) {
-  return Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10.0),
-    ),
-    margin: new EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
-    child: Badge(
+Widget makeACard(String imgPath, String caption, {int count = 1, bool showOneCount = false}) {
+  return Badge(
       badgeContent: Text(count.toString()),
+      showBadge: showOneCount || count != 1,
       animationType: null,
-      position: BadgePosition(
-        top: 0,
-        right: 4,
-      ),
+      position: BadgePosition( top: 0, right: 4, ),
       child: Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: <Widget>[
           Image(
             image: AssetImage(imgPath),
           ),
-          SizedBox(
+          Container(
             width: double.infinity,
-            child: Opacity(
-              opacity: 0.75,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
-                  color: Colors.grey[200],
-                ),
-                child: Text(
-                  caption,
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
+              color: Colors.grey[200].withOpacity(0.75),
+            ),
+            child: Text(
+              caption,
+              style: TextStyle(
+                fontSize: 18,
               ),
             ),
           ),
         ],
       ), 
-    ), 
   );
 }
 class AvalonAssistant extends StatelessWidget {
@@ -189,7 +176,6 @@ class _AddPlayerState extends State<AddPlayer> {
                                   child: makeACard(
                                     "assets/" + Avalon.getName(newC) + ".png", 
                                     Avalon.getName(newC),
-                                    0
                                   )
                                 )
                     ).toList(),
@@ -236,7 +222,7 @@ class _AddPlayerState extends State<AddPlayer> {
                                   child: makeACard(
                                     "assets/" + Avalon.getName(c) + ".png", 
                                     Avalon.getName(c),
-                                    0
+                                    count: config['charactors'][c]
                                   )
                                 )
                               ).toList(),
@@ -254,7 +240,7 @@ class _AddPlayerState extends State<AddPlayer> {
                                   child: makeACard(
                                     "assets/" + Avalon.getName(c) + ".png", 
                                     Avalon.getName(c),
-                                    0
+                                    count: config['charactors'][c]
                                   )
                                 )
                               ).toList(),
@@ -389,7 +375,7 @@ class IdentityAssignment extends StatelessWidget {
       }
     );
   }
-  
+
   @override
   Widget build(BuildContext context ) {
     return Scaffold(
@@ -410,7 +396,6 @@ class IdentityAssignment extends StatelessWidget {
                   child: makeACard(
                     "assets/Back.png", 
                     player,
-                    0
                   )
                 )
               ).toList(),
