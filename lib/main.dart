@@ -36,13 +36,13 @@ Widget makeACard(String imgPath, String caption, {int count = 1, bool showOneCou
       ), 
   );
 }
-Widget makeGrids(Iterable<Widget> widgets) {
+Widget makeGrids(List<Widget> widgets) {
   return GridView.count(
     shrinkWrap: true,
     crossAxisCount: 4,
     childAspectRatio: 0.71,
     physics: NeverScrollableScrollPhysics(),
-    children: widgets.toList(),
+    children: widgets,
   );
 }
 
@@ -126,12 +126,6 @@ class _AddPlayerState extends State<AddPlayer> {
     );
   }
 
-  void replaceCard(Charactor newC, Charactor oldC) {
-    removeCharactor(oldC);
-    addCharactor(newC);
-    Navigator.of(context, rootNavigator: true).pop();
-  }
-
   void replaceCardDialog(Charactor c) {
     showDialog(
       context: context,
@@ -178,13 +172,17 @@ class _AddPlayerState extends State<AddPlayer> {
                   child: makeGrids(
                       (Avalon.allGood.contains(c) ? Avalon.allGood : Avalon.allEvil).where((newC) => config['charactors'][newC] == 0 || newC == Charactor.minion || newC == Charactor.servant).map(
                         (Charactor newC) => InkResponse(
-                        onTap: () => replaceCard(newC, c),
+                        onTap: () {
+                          removeCharactor(c);
+                          addCharactor(newC);
+                          Navigator.of(context, rootNavigator: true).pop();
+                        },
                         child: makeACard(
                           "assets/" + Avalon.getName(newC) + ".png", 
                           Avalon.getName(newC),
                         )
                       )
-                    ),
+                    ).toList(),
                   ),
                 ),
               ],
