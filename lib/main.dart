@@ -79,7 +79,7 @@ class SetupPage extends StatefulWidget {
 }
 
 class _SetupPageState extends State<SetupPage> {
-  Set<String> players = {"A", "B", "C", "D", "E"};
+  Set<String> players = {};
   int nPlayers = 5;
   Map config = Avalon.getDefaultConfig(5);
   final _addPlayerController = TextEditingController();
@@ -425,7 +425,7 @@ class _QuestPageState extends State<QuestPage> {
     finishedQuests = makeGrids(
       count: 5,
       children: List<int>.generate(nVotes, (i) => i).map((_) =>
-        makeACard("assets/QuestBack.png", "Vote")
+        makeACard("assets/QuestBack.png", "Completed")
     ).toList());
   }
 
