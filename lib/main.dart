@@ -40,12 +40,13 @@ Widget makeACard(String imgPath, String caption, {int count = 1, bool showOneCou
 }
 Widget makeGrids({List<Widget> children, int count = 4}) {
   return Column(
+    mainAxisSize: MainAxisSize.min,
     children: List<int>.generate((children.length ~/ count) + 1, (i) => i).map(
       (i) => Row(
         children: List<int>.generate(count, (j) => j).map(
           (j) => Flexible(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 3),
+              padding: EdgeInsets.all(3),
               child: children.length > i * count + j ? children[i * count + j] : SizedBox(),
             )
           )
@@ -138,65 +139,30 @@ class _AddPlayerState extends State<AddPlayer> {
   void replaceCardDialog(Charactor c) {
     showDialog(
       context: context,
-      builder: (_) => Center( 
-        child: Container(
-          margin: EdgeInsets.all(0),
-          padding: EdgeInsets.all(0),
-          width: 300,
-          child: Card(
-            color: Colors.transparent,
-            elevation: 0,
-            // margin: EdgeInsets.symmetric(vertical: 80),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row( 
-                  children: [
-                    Expanded( 
-                      child: Image(
-                        fit: BoxFit.fitWidth,
-                        image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
-                      )
-                    ),
-                  ]
-                ),
-                SizedBox.fromSize(size: Size(0, 10),),
-                Text(
-                  Avalon.getName(c),
-                  style: Theme.of(context).textTheme.headline,
-                ),
-                Text(
-                  Avalon.getDescroption(c),
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
-                SizedBox.fromSize(size: Size(0, 10),),
-                Text(
-                  "Replace it with",
-                  style: Theme.of(context).textTheme.title,
-                ),
-                makeGrids(
-                  children: (Avalon.allGood.contains(c) ? Avalon.allGood : Avalon.allEvil).where((newC) => config['charactors'][newC] == 0 || newC == Charactor.minion || newC == Charactor.servant).map(
-                    (Charactor newC) => InkResponse(
-                      onTap: () {
-                        removeCharactor(c);
-                        addCharactor(newC);
-                        Navigator.of(context, rootNavigator: true).pop();
-                      },
-                      child: makeACard(
-                        "assets/" + Avalon.getName(newC) + ".png", 
-                        Avalon.getName(newC),
-                      )
-                    )
-                  ).toList(),
-                  count: 3
-                ),
-              ],
+      builder: (_) => Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: makeGrids(
+          children: (Avalon.allGood.contains(c) ? Avalon.allGood : Avalon.allEvil)
+          .where(
+            (newC) => config['charactors'][newC] == 0 || 
+            newC == Charactor.minion || 
+            newC == Charactor.servant)
+          .map(
+            (Charactor newC) => InkResponse(
+              onTap: () {
+                removeCharactor(c);
+                addCharactor(newC);
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+              child: makeACard(
+                "assets/" + Avalon.getName(newC) + ".png", 
+                Avalon.getName(newC),
+              )
             )
-          )      
-        )
+          ).toList(),
+          count: 3
+        ),     
       )
     );
   }
