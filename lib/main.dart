@@ -264,6 +264,7 @@ class RevealPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               makeACard("assets/" + Avalon.getName(c) + ".png", Avalon.getName(c)),
+              SizedBox.fromSize(size: Size.fromHeight(5),),
               ...knowledge.keys.map(
                 (Charactor c) => Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
