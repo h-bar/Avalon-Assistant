@@ -64,20 +64,20 @@ class AvalonAssistant extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AddPlayer(title: 'Avalon Assistant'),
+      home: SetupPage(title: 'Avalon Assistant'),
     );
   }
 }
 
-class AddPlayer extends StatefulWidget {
-  AddPlayer({Key key, this.title}) : super(key: key);
+class SetupPage extends StatefulWidget {
+  SetupPage({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
-  _AddPlayerState createState() => _AddPlayerState();
+  _SetupPageState createState() => _SetupPageState();
 }
 
-class _AddPlayerState extends State<AddPlayer> {
+class _SetupPageState extends State<SetupPage> {
   Set<String> players = {"A", "B", "C", "D", "E"};
   int nPlayers = 5;
   Map config = Avalon.getDefaultConfig(5);
