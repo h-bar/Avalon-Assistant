@@ -79,7 +79,7 @@ class _AddPlayerState extends State<AddPlayer> {
   Widget startGameBtn() {
     return FlatButton(
       child: Text('Start Game'),
-      color: Colors.blue,
+      color: Theme.of(context).accentColor,
       onPressed: () {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) => IdentityAssignment(Avalon(players.toList(), config)),
@@ -245,7 +245,6 @@ class _AddPlayerState extends State<AddPlayer> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
-        backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
         title: Text(widget.title),
         actions: <Widget>[
           IconButton(
@@ -401,9 +400,10 @@ class IdentityAssignment extends StatelessWidget {
     );
   }
 
-  Widget taskBtn(BuildContext context) {
+  Widget startQuestBtn(BuildContext context) {
     return FlatButton(
-      child: Text('Vote for tasks'),
+      color: Theme.of(context).accentColor,
+      child: Text('Start Quests'),
       onPressed: () {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) => TaskPage(),
@@ -503,7 +503,8 @@ class IdentityAssignment extends StatelessWidget {
                 (String player) => makeCard(context, player)
               ).toList(),
             ),
-          )
+          ),
+          startQuestBtn(context),
         ],
       )
     );
