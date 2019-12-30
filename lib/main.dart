@@ -251,7 +251,7 @@ class RevealPage extends StatelessWidget {
 
   void revealIdentity(BuildContext context, String player) {
     Map<Charactor, List<String>> knowledge = game.getKnowledge(player);
-    Charactor c = game.getIdentity(player);
+    String identity = Avalon.getName(game.getIdentity(player));
     showDialog(
       context: context,
       builder: (_) => Dialog(
@@ -263,7 +263,7 @@ class RevealPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              makeACard("assets/" + Avalon.getName(c) + ".png", Avalon.getName(c)),
+              makeACard("assets/" + identity + ".png", identity),
               SizedBox.fromSize(size: Size.fromHeight(5),),
               ...knowledge.keys.map(
                 (Charactor c) => Row(
