@@ -185,73 +185,62 @@ class _AddPlayerState extends State<AddPlayer> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Flexible(
-            child: Column(
-              children: <Widget>[
-                makeGrids(
-                  children: Avalon.allGood.where((c) => config['charactors'][c] != 0).map(
-                    (Charactor c) => InkResponse(
-                      onTap: () => replaceCardDialog(c),
-                      child: makeACard(
-                        "assets/" + Avalon.getName(c) + ".png", 
-                        Avalon.getName(c),
-                        count: config['charactors'][c]
-                      )
-                    )
-                  ).toList(),
-                ),
-                makeGrids(
-                  children: Avalon.allEvil.where((c) => config['charactors'][c] != 0).map(
-                    (Charactor c) => InkResponse(
-                      onTap: () => replaceCardDialog(c),
-                      child: makeACard(
-                        "assets/" + Avalon.getName(c) + ".png", 
-                        Avalon.getName(c),
-                        count: config['charactors'][c]
-                      )
-                    )
-                  ).toList(),
-                ),
-              ],
-            ),
+          makeGrids(
+            children: Avalon.allGood.where((c) => config['charactors'][c] != 0).map(
+              (Charactor c) => InkResponse(
+                onTap: () => replaceCardDialog(c),
+                child: makeACard(
+                  "assets/" + Avalon.getName(c) + ".png", 
+                  Avalon.getName(c),
+                  count: config['charactors'][c]
+                )
+              )
+            ).toList(),
           ),
-          
-          
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Wrap(
-                  spacing: 4,
-                  children: players.map((String p) => 
-                    InputChip(
-                      label: Text(p),
-                      // avatar: CircleAvatar(child: Text(p.substring(0, 1)),),
-                      onDeleted: () => removePlayer(p),
-                    )
-                  ).toList()
-                ),
-                TextField(
-                  controller: _addPlayerController,
-                  decoration: InputDecoration.collapsed(hintText: "Add a Player"),
-                  onSubmitted: (t) {
-                    if (players.length >= 10) {
-                      print("Maxium 10 players are allowed for this game");
-                    } else if (!addPlayer(t)){
-                      print("Please use different name for each player");
-                    } 
-                    _addPlayerController.clear();
-                  }
-                ),
-              ],
-            ),
+          makeGrids(
+            children: Avalon.allEvil.where((c) => config['charactors'][c] != 0).map(
+              (Charactor c) => InkResponse(
+                onTap: () => replaceCardDialog(c),
+                child: makeACard(
+                  "assets/" + Avalon.getName(c) + ".png", 
+                  Avalon.getName(c),
+                  count: config['charactors'][c]
+                )
+              )
+            ).toList(),
           ),
 
-          Center(
-            child: startGameBtn(),
-          )
+          Expanded(child: SizedBox()),
+          
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3),
+            child:  Wrap(
+              spacing: 4,
+              children: players.map((String p) => 
+                InputChip(
+                  label: Text(p),
+                  // avatar: CircleAvatar(child: Text(p.substring(0, 1)),),
+                  onDeleted: () => removePlayer(p),
+                )
+              ).toList()
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3),
+            child: TextField(
+              controller: _addPlayerController,
+              decoration: InputDecoration.collapsed(hintText: "Add a Player"),
+              onSubmitted: (t) {
+                if (players.length >= 10) {
+                  print("Maxium 10 players are allowed for this game");
+                } else if (!addPlayer(t)){
+                  print("Please use different name for each player");
+                } 
+                _addPlayerController.clear();
+              }
+            ),
+          ),
+          Center( child: startGameBtn() )
       ])
     );
   }
