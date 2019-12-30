@@ -244,14 +244,13 @@ class Avalon {
   }
 
   
-  Map getKnowledge(String player) {
-    Map knowledge = {};
-    Charactor c = getIdentity(player);
-    charactorInfo[c]['knowledge'].forEach((c, i) {
-      if (!knowledge.containsKey(getName(i))) {
-        knowledge[getName(i)] = [];
+  Map<Charactor, List<String>> getKnowledge(String player) {
+    Map<Charactor, List<String>> knowledge = {};
+    charactorInfo[getIdentity(player)]['knowledge'].forEach((c, i) {
+      if (!knowledge.containsKey(i)) {
+        knowledge[i] = [];
       }
-      knowledge[getName(i)].addAll(getPlayer(c));
+      knowledge[i].addAll(getPlayer(c));
     });
 
     return knowledge;
