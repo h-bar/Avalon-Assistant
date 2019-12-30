@@ -36,6 +36,16 @@ Widget makeACard(String imgPath, String caption, {int count = 1, bool showOneCou
       ), 
   );
 }
+Widget makeGrids(Iterable<Widget> widgets) {
+  return GridView.count(
+    shrinkWrap: true,
+    crossAxisCount: 4,
+    childAspectRatio: 0.71,
+    physics: NeverScrollableScrollPhysics(),
+    children: widgets.toList(),
+  );
+}
+
 class AvalonAssistant extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -165,20 +175,16 @@ class _AddPlayerState extends State<AddPlayer> {
                   style: Theme.of(context).textTheme.title,
                 ),
                 Flexible(
-                  child: GridView.count(
-                    shrinkWrap: true,
-                    crossAxisCount: 3,
-                    childAspectRatio: 0.71,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: (Avalon.allGood.contains(c) ? Avalon.allGood : Avalon.allEvil).where((newC) => config['charactors'][newC] == 0 || newC == Charactor.minion || newC == Charactor.servant).map(
-                      (Charactor newC) => InkResponse(
-                                  onTap: () => replaceCard(newC, c),
-                                  child: makeACard(
-                                    "assets/" + Avalon.getName(newC) + ".png", 
-                                    Avalon.getName(newC),
-                                  )
-                                )
-                    ).toList(),
+                  child: makeGrids(
+                      (Avalon.allGood.contains(c) ? Avalon.allGood : Avalon.allEvil).where((newC) => config['charactors'][newC] == 0 || newC == Charactor.minion || newC == Charactor.servant).map(
+                        (Charactor newC) => InkResponse(
+                        onTap: () => replaceCard(newC, c),
+                        child: makeACard(
+                          "assets/" + Avalon.getName(newC) + ".png", 
+                          Avalon.getName(newC),
+                        )
+                      )
+                    ),
                   ),
                 ),
               ],
@@ -211,39 +217,31 @@ class _AddPlayerState extends State<AddPlayer> {
             child: Column(
               children: <Widget>[
                 Flexible(
-                  child: GridView.count(
-                    shrinkWrap: true,
-                    crossAxisCount: 4,
-                    childAspectRatio: 0.71,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: Avalon.allGood.where((c) => config['charactors'][c] != 0).map(
-                                (Charactor c) => InkResponse(
-                                  onTap: () => replaceCardDialog(c),
-                                  child: makeACard(
-                                    "assets/" + Avalon.getName(c) + ".png", 
-                                    Avalon.getName(c),
-                                    count: config['charactors'][c]
-                                  )
-                                )
-                              ).toList(),
+                  child: makeGrids(
+                    Avalon.allGood.where((c) => config['charactors'][c] != 0).map(
+                      (Charactor c) => InkResponse(
+                        onTap: () => replaceCardDialog(c),
+                        child: makeACard(
+                          "assets/" + Avalon.getName(c) + ".png", 
+                          Avalon.getName(c),
+                          count: config['charactors'][c]
+                        )
+                      )
+                    ).toList(),
                   ),
                 ),
                 Flexible(
-                  child: GridView.count(
-                    shrinkWrap: true,
-                    crossAxisCount: 4,
-                    childAspectRatio: 0.71,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: Avalon.allEvil.where((c) => config['charactors'][c] != 0).map(
-                                (Charactor c) => InkResponse(
-                                  onTap: () => replaceCardDialog(c),
-                                  child: makeACard(
-                                    "assets/" + Avalon.getName(c) + ".png", 
-                                    Avalon.getName(c),
-                                    count: config['charactors'][c]
-                                  )
-                                )
-                              ).toList(),
+                  child: makeGrids(
+                    Avalon.allEvil.where((c) => config['charactors'][c] != 0).map(
+                      (Charactor c) => InkResponse(
+                        onTap: () => replaceCardDialog(c),
+                        child: makeACard(
+                          "assets/" + Avalon.getName(c) + ".png", 
+                          Avalon.getName(c),
+                          count: config['charactors'][c]
+                        )
+                      )
+                    ).toList(),
                   ),
                 ),
               ],
@@ -385,12 +383,8 @@ class IdentityAssignment extends StatelessWidget {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 4,
-              childAspectRatio: 0.71,
-              physics: NeverScrollableScrollPhysics(),
-              children: game.getAllPlayers().map(
+            child: makeGrids(
+              game.getAllPlayers().map(
                 (String player) => InkResponse(
                   onTap: () => revealIdentity(context, player),
                   child: makeACard(
