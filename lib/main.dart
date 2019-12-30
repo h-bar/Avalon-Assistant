@@ -257,35 +257,38 @@ class RevealPage extends StatelessWidget {
       builder: (_) => Dialog(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            makeACard("assets/" + Avalon.getName(c) + ".png", Avalon.getName(c)),
-            ...knowledge.keys.map(
-              (Charactor c) => Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Flexible(
-                    flex: 1,
-                    child: makeACard("assets/" + Avalon.getName(c) + ".png", Avalon.getName(c)),
-                  ),
-                  Flexible(
-                    flex: 2,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 3),
-                      child:  Wrap(
-                        alignment: WrapAlignment.start,
-                        spacing: 4,
-                        children: knowledge[c].where((name) => name != player).map(
-                          (name) => Chip(label: Text(name))
-                        ).toList(),
+        child: SizedBox.fromSize(
+          size: Size.fromWidth(200),
+            child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              makeACard("assets/" + Avalon.getName(c) + ".png", Avalon.getName(c)),
+              ...knowledge.keys.map(
+                (Charactor c) => Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Flexible(
+                      flex: 1,
+                      child: makeACard("assets/" + Avalon.getName(c) + ".png", Avalon.getName(c)),
+                    ),
+                    Flexible(
+                      flex: 2,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 3),
+                        child:  Wrap(
+                          alignment: WrapAlignment.start,
+                          spacing: 4,
+                          children: knowledge[c].where((name) => name != player).map(
+                            (name) => Chip(label: Text(name))
+                          ).toList(),
+                        )
                       )
-                    )
-                  ),
-                ],
-              )
-            ).toList(),
-          ],
+                    ),
+                  ],
+                )
+              ).toList(),
+            ],
+          )
         )
       ),     
     );
