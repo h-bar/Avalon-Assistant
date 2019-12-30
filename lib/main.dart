@@ -213,20 +213,19 @@ class _SetupPageState extends State<SetupPage> {
           Expanded(child: SizedBox()),
           
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3),
+            padding: EdgeInsets.symmetric(horizontal: 4),
             child:  Wrap(
               spacing: 4,
               children: players.map((String p) => 
                 InputChip(
                   label: Text(p),
-                  // avatar: CircleAvatar(child: Text(p.substring(0, 1)),),
                   onDeleted: () => removePlayer(p),
                 )
               ).toList()
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3),
+            padding: EdgeInsets.symmetric(horizontal: 4),
             child: TextField(
               controller: _addPlayerController,
               decoration: InputDecoration.collapsed(hintText: "Add a Player"),
@@ -251,71 +250,44 @@ class RevealPage extends StatelessWidget {
   RevealPage(this.game);
 
   void revealIdentity(BuildContext context, String player) {
-    Charactor c = game.getIdentity(player);
     Map<Charactor, List<String>> knowledge = game.getKnowledge(player);
-
+    Charactor c = game.getIdentity(player);
     showDialog(
       context: context,
-      builder: (_) => Center( 
-        child: Container(
-          margin: EdgeInsets.all(0),
-          padding: EdgeInsets.all(0),
-          width: 300,
-          child: Card(
-            color: Colors.transparent,
-            elevation: 0,
-            // margin: EdgeInsets.symmetric(vertical: 80),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row( 
-                  children: [
-                    Expanded( 
-                      child: Image(
-                        fit: BoxFit.fitWidth,
-                        image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
+      builder: (_) => Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            makeACard("assets/" + Avalon.getName(c) + ".png", Avalon.getName(c)),
+            ...knowledge.keys.map(
+              (Charactor c) => Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Flexible(
+                    flex: 1,
+                    child: makeACard("assets/" + Avalon.getName(c) + ".png", Avalon.getName(c)),
+                  ),
+                  Flexible(
+                    flex: 2,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 3),
+                      child:  Wrap(
+                        alignment: WrapAlignment.start,
+                        spacing: 4,
+                        children: knowledge[c].where((name) => name != player).map(
+                          (name) => Chip(label: Text(name))
+                        ).toList(),
                       )
-                    ),
-                  ]
-                ),
-                SizedBox.fromSize(size: Size(0, 10),),
-                Text(
-                  Avalon.getName(c),
-                  style: Theme.of(context).textTheme.headline,
-                ),
-                Text(
-                  Avalon.getDescroption(c),
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
-                SizedBox.fromSize(size: Size(0, 10),),
-                Column(
-                  children: knowledge.keys.map(
-                    (Charactor c) {
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Image(
-                            image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
-                          ),
-                          Wrap(
-                            alignment: WrapAlignment.start,
-                            children: knowledge[c].where((name) => name != player).map(
-                              (name) => Chip(label: Text(name))
-                            ).toList(),
-                          )
-                        ],
-                      );
-                    }
-                  ).toList(),
-                ),
-              ],
-            )
-          )      
+                    )
+                  ),
+                ],
+              )
+            ).toList(),
+          ],
         )
-      )
+      ),     
     );
   }
 
