@@ -17,6 +17,8 @@ Widget makeACard(String imgPath, String caption, {int count = 1, bool showOneCou
         alignment: AlignmentDirectional.bottomCenter,
         children: <Widget>[
           Image(
+            fit: BoxFit.fitWidth,
+            width: double.infinity,
             image: AssetImage(imgPath),
           ),
           Container(
