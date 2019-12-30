@@ -260,6 +260,7 @@ class RevealPage extends StatelessWidget {
         child: SizedBox.fromSize(
           size: Size.fromWidth(200),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               makeACard("assets/" + Avalon.getName(c) + ".png", Avalon.getName(c)),
