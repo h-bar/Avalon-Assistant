@@ -130,7 +130,7 @@ class _SetupPageState extends State<SetupPage> {
       color: Theme.of(context).accentColor,
       onPressed: () {
         Navigator.push(context, MaterialPageRoute(
-          builder: (context) => IdentityAssignment(Avalon(players.toList(), config)),
+          builder: (context) => RevealPage(Avalon(players.toList(), config)),
         ));
       }
     );
@@ -246,9 +246,9 @@ class _SetupPageState extends State<SetupPage> {
   }
 }
 
-class IdentityAssignment extends StatelessWidget {
+class RevealPage extends StatelessWidget {
   final Avalon game;
-  IdentityAssignment(this.game);
+  RevealPage(this.game);
 
   void revealIdentity(BuildContext context, String player) {
     Charactor c = game.getIdentity(player);
