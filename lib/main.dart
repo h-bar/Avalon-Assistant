@@ -79,6 +79,7 @@ class _AddPlayerState extends State<AddPlayer> {
   Widget startGameBtn() {
     return FlatButton(
       child: Text('Start Game'),
+      color: Colors.blue,
       onPressed: () {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) => IdentityAssignment(Avalon(players.toList(), config)),
@@ -317,8 +318,11 @@ class _AddPlayerState extends State<AddPlayer> {
                 ),
               ],
             ),
-          )
+          ),
 
+          Center(
+            child: startGameBtn(),
+          )
       ])
     );
   }
@@ -329,30 +333,72 @@ class IdentityAssignment extends StatelessWidget {
   IdentityAssignment(this.game);
 
   void revealIdentity(BuildContext context, String player) {
-    String identity = Avalon.getName(game.getIdentity(player));
-
-    Map knowledge = game.getKnowledge(player);
+    Charactor c = game.getIdentity(player);
+    Map<Charactor, List<String>> knowledge = game.getKnowledge(player);
 
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(identity),
-          content: Text(knowledge.toString()),
-        );
-      },
-    );
-  }
-
-  List<Widget> buildPlayerTiles(BuildContext context) {
-    List<Widget> playerTiles = <Widget>[];
-    game.getAllPlayers().forEach((p) => playerTiles.add(
-      ActionChip(
-        label: Text(p),
-        onPressed: () => revealIdentity(context, p),
+      builder: (_) => Center( 
+        child: Container(
+          margin: EdgeInsets.all(0),
+          padding: EdgeInsets.all(0),
+          width: 300,
+          child: Card(
+            color: Colors.transparent,
+            elevation: 0,
+            // margin: EdgeInsets.symmetric(vertical: 80),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row( 
+                  children: [
+                    Expanded( 
+                      child: Image(
+                        fit: BoxFit.fitWidth,
+                        image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
+                      )
+                    ),
+                  ]
+                ),
+                SizedBox.fromSize(size: Size(0, 10),),
+                Text(
+                  Avalon.getName(c),
+                  style: Theme.of(context).textTheme.headline,
+                ),
+                Text(
+                  Avalon.getDescroption(c),
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+                SizedBox.fromSize(size: Size(0, 10),),
+                Column(
+                  children: knowledge.keys.map(
+                    (Charactor c) {
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Image(
+                            image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
+                          ),
+                          Wrap(
+                            alignment: WrapAlignment.start,
+                            children: knowledge[c].where((name) => name != player).map(
+                              (name) => Chip(label: Text(name))
+                            ).toList(),
+                          )
+                        ],
+                      );
+                    }
+                  ).toList(),
+                ),
+              ],
+            )
+          )      
         )
-    ));
-    return playerTiles;
+      )
+    );
   }
 
   Widget taskBtn(BuildContext context) {
@@ -366,6 +412,78 @@ class IdentityAssignment extends StatelessWidget {
     );
   }
 
+  Widget makeCard2(BuildContext context, Charactor c, String player) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      margin: new EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
+      child: Stack(
+        alignment: AlignmentDirectional.bottomCenter,
+        children: <Widget>[
+          Image(
+            image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: Opacity(
+              opacity: 0.75,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
+                  color: Colors.grey[200],
+                ),
+                child: Text(
+                  player,
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ), 
+    );
+  }
+
+  Widget makeCard(BuildContext context, String player) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      margin: new EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
+      child: InkResponse(
+        onTap: () => revealIdentity(context, player),
+        child: Stack(
+          alignment: AlignmentDirectional.bottomCenter,
+          children: <Widget>[
+            Image(
+              image: AssetImage("assets/Back.png"),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: Opacity(
+                opacity: 0.75,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
+                    color: Colors.grey[200],
+                  ),
+                  child: Text(
+                    player,
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ), 
+      ), 
+    );
+  }
 
   @override
   Widget build(BuildContext context ) {
@@ -373,15 +491,21 @@ class IdentityAssignment extends StatelessWidget {
       appBar: AppBar(
         title: Text("Identity Assignment"),
       ),
-      body: Center(
-        child: Wrap(
-          alignment: WrapAlignment.start,
-          children: [
-            ...buildPlayerTiles(context),
-            taskBtn(context),
-          ],
-        ),
-      ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 4,
+              childAspectRatio: 0.71,
+              physics: NeverScrollableScrollPhysics(),
+              children: game.getAllPlayers().map(
+                (String player) => makeCard(context, player)
+              ).toList(),
+            ),
+          )
+        ],
+      )
     );
   }
 }
