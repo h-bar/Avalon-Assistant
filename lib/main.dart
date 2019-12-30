@@ -7,6 +7,48 @@ import 'avalon.dart';
 
 void main() => runApp(AvalonAssistant());
 
+Widget makeACard(String imgPath, String caption, int count) {
+  return Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+    margin: new EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
+    child: Badge(
+      badgeContent: Text(count.toString()),
+      animationType: null,
+      position: BadgePosition(
+        top: 0,
+        right: 4,
+      ),
+      child: Stack(
+        alignment: AlignmentDirectional.bottomCenter,
+        children: <Widget>[
+          Image(
+            image: AssetImage(imgPath),
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: Opacity(
+              opacity: 0.75,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
+                  color: Colors.grey[200],
+                ),
+                child: Text(
+                  caption,
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ), 
+    ), 
+  );
+}
 class AvalonAssistant extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -31,7 +73,6 @@ class AddPlayer extends StatefulWidget {
 class _AddPlayerState extends State<AddPlayer> {
   Set<String> players = {"A", "B", "C", "D", "E"};
   int nPlayers = 5;
-  List identites = [];
   Map config = Avalon.getDefaultConfig(5);
   final _addPlayerController = TextEditingController();
 
@@ -143,7 +184,14 @@ class _AddPlayerState extends State<AddPlayer> {
                     childAspectRatio: 0.71,
                     physics: NeverScrollableScrollPhysics(),
                     children: (Avalon.allGood.contains(c) ? Avalon.allGood : Avalon.allEvil).where((newC) => config['charactors'][newC] == 0 || newC == Charactor.minion || newC == Charactor.servant).map(
-                      (Charactor newC) => makeCard2(newC, c, replaceCard)
+                      (Charactor newC) => InkResponse(
+                                  onTap: () => replaceCard(newC, c),
+                                  child: makeACard(
+                                    "assets/" + Avalon.getName(newC) + ".png", 
+                                    Avalon.getName(newC),
+                                    0
+                                  )
+                                )
                     ).toList(),
                   ),
                 ),
@@ -152,90 +200,6 @@ class _AddPlayerState extends State<AddPlayer> {
           )      
         )
       )
-    );
-  }
-
-  Widget makeCard2(Charactor c, Charactor oldC, Function onTap) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      margin: new EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
-      child: InkResponse(
-        onTap: () => onTap(c, oldC),
-        child: Stack(
-          alignment: AlignmentDirectional.bottomCenter,
-          children: <Widget>[
-            Image(
-              image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: Opacity(
-                opacity: 0.75,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
-                    color: Colors.grey[200],
-                  ),
-                  child: Text(
-                    Avalon.getName(c),
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ), 
-      ),
-    );
-  }
-
-  Widget makeCard(Charactor c, Function onTap) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      margin: new EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
-      child: Badge(
-        badgeContent: Text(Avalon.getDefaultConfig(nPlayers)['charactors'][c].toString()),
-        animationType: null,
-        position: BadgePosition(
-          top: 0,
-          right: 4,
-        ),
-        child: InkResponse(
-          onTap: () => onTap(c),
-          child: Stack(
-            alignment: AlignmentDirectional.bottomCenter,
-            children: <Widget>[
-              Image(
-                image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: Opacity(
-                  opacity: 0.75,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
-                      color: Colors.grey[200],
-                    ),
-                    child: Text(
-                      Avalon.getName(c),
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ), 
-        ),
-      ), 
     );
   }
 
@@ -267,7 +231,14 @@ class _AddPlayerState extends State<AddPlayer> {
                     childAspectRatio: 0.71,
                     physics: NeverScrollableScrollPhysics(),
                     children: Avalon.allGood.where((c) => config['charactors'][c] != 0).map(
-                                (Charactor c) => makeCard(c, replaceCardDialog)
+                                (Charactor c) => InkResponse(
+                                  onTap: () => replaceCardDialog(c),
+                                  child: makeACard(
+                                    "assets/" + Avalon.getName(c) + ".png", 
+                                    Avalon.getName(c),
+                                    0
+                                  )
+                                )
                               ).toList(),
                   ),
                 ),
@@ -278,7 +249,14 @@ class _AddPlayerState extends State<AddPlayer> {
                     childAspectRatio: 0.71,
                     physics: NeverScrollableScrollPhysics(),
                     children: Avalon.allEvil.where((c) => config['charactors'][c] != 0).map(
-                                (Charactor c) => makeCard(c, replaceCardDialog)
+                                (Charactor c) => InkResponse(
+                                  onTap: () => replaceCardDialog(c),
+                                  child: makeACard(
+                                    "assets/" + Avalon.getName(c) + ".png", 
+                                    Avalon.getName(c),
+                                    0
+                                  )
+                                )
                               ).toList(),
                   ),
                 ),
@@ -411,80 +389,7 @@ class IdentityAssignment extends StatelessWidget {
       }
     );
   }
-
-  Widget makeCard2(BuildContext context, Charactor c, String player) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      margin: new EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
-      child: Stack(
-        alignment: AlignmentDirectional.bottomCenter,
-        children: <Widget>[
-          Image(
-            image: AssetImage("assets/" + Avalon.getName(c) + ".png"),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: Opacity(
-              opacity: 0.75,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
-                  color: Colors.grey[200],
-                ),
-                child: Text(
-                  player,
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ), 
-    );
-  }
-
-  Widget makeCard(BuildContext context, String player) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      margin: new EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
-      child: InkResponse(
-        onTap: () => revealIdentity(context, player),
-        child: Stack(
-          alignment: AlignmentDirectional.bottomCenter,
-          children: <Widget>[
-            Image(
-              image: AssetImage("assets/Back.png"),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: Opacity(
-                opacity: 0.75,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
-                    color: Colors.grey[200],
-                  ),
-                  child: Text(
-                    player,
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ), 
-      ), 
-    );
-  }
-
+  
   @override
   Widget build(BuildContext context ) {
     return Scaffold(
@@ -500,7 +405,14 @@ class IdentityAssignment extends StatelessWidget {
               childAspectRatio: 0.71,
               physics: NeverScrollableScrollPhysics(),
               children: game.getAllPlayers().map(
-                (String player) => makeCard(context, player)
+                (String player) => InkResponse(
+                  onTap: () => revealIdentity(context, player),
+                  child: makeACard(
+                    "assets/Back.png", 
+                    player,
+                    0
+                  )
+                )
               ).toList(),
             ),
           ),
@@ -597,9 +509,7 @@ class _TaskPageState extends State<TaskPage> {
       body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            buildVoteOptoins(),
-            buildResults(),
-            buildActions(),
+            
           ],
         ),
     );
