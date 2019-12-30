@@ -40,11 +40,11 @@ class AvalonAssistant extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Avalon Assistant',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AddPlayer(title: 'Avalon Asistant'),
+      home: AddPlayer(title: 'Avalon Assistant'),
     );
   }
 }
