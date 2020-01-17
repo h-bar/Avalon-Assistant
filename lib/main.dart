@@ -290,6 +290,13 @@ class RevealPage extends StatelessWidget {
                   ],
                 )
               ).toList(),
+              FlatButton(
+                child: Text('Ok'),
+                color: Theme.of(context).primaryColor,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
             ],
           )
         )
