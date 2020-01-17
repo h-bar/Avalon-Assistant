@@ -64,6 +64,7 @@ class Avalon {
       'knowledge': {
         Charactor.assassin: Charactor.minion,
         Charactor.morgana: Charactor.minion,
+        Charactor.oberon: Charactor.minion,
         Charactor.minion: Charactor.minion,
       },
     },
